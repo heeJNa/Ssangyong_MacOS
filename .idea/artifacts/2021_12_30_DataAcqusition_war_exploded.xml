@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="2021_12_30_DataAcqusition:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/2021_12_30_DataAcqusition_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="2021_12_30_DataAcqusition/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="2021_12_30_DataAcqusition" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
