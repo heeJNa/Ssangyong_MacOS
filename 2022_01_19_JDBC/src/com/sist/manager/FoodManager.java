@@ -12,6 +12,7 @@ import java.util.List;
 
 // 사이트를 연결해서 데이터 읽기 => HTML Parser (Jsoup:정적데이터)
 // 동적 (실시간) => 셀레니움
+
 public class FoodManager {
     public static void main(String[] args) {
         FoodManager m=new FoodManager();
@@ -35,24 +36,26 @@ public class FoodManager {
                 fvo.setCno(vo.getCno());
                 for(int i=0;i<link.size();i++)
                 {
+
                     //System.out.println((i+1)+"."+link.get(i).attr("href"));
                     // https://www.mangoplate.com/
 
                     Document doc2=Jsoup.connect("https://www.mangoplate.com"
                             +link.get(i).attr("href")).get();
+
                     // figure class="restaurant-photos-item"
                     Elements poster=doc2.select("figure.restaurant-photos-item img.center-croping");
                     String img="";
                     for(int j=0;j<poster.size();j++)
                     {
                         System.out.println(poster.get(j).attr("src"));
-                        img+=poster.get(j).attr("src")+"^";
+                        img += poster.get(j).attr("src")+"^";
                     }
-                    img=img.substring(0,img.lastIndexOf("^"));
+                    img=img.substring(0,img.lastIndexOf("^")); // 마지막 ^를 없앤다.
                     img=img.replace("&", "#");
                     fvo.setPoster(img);
-    				/*
-    				 *   <span class="title">
+
+    				/*   <span class="title">
 		                  <h1 class="restaurant_name">와려</h1>
 		                    <strong class="rate-point ">
 		                      <span>4.6</span>
@@ -68,8 +71,8 @@ public class FoodManager {
                     System.out.println(score.text());
                     fvo.setScore(Double.parseDouble(score.text().trim()));
 
-    				/*
-    				 *   <img src="aaa"> => attr("src")
+
+    				 /*   <img src="aaa"> => attr("src")
     				 *   <td>aaa</td> ==> text()
     				 *
     				 *   <tr class="only-desktop">
@@ -99,8 +102,8 @@ public class FoodManager {
                         fvo.setTel("no");
                     }
 
-    				/*
-    				 *  <table class="info">
+
+    				 /*  <table class="info">
     				 *  <tr>
                   <th>음식 종류</th>
                   <td>
@@ -131,8 +134,8 @@ public class FoodManager {
                         System.out.println("가격대가 없습니다");
                         fvo.setPrice("no");
                     }
-    				/*
-    				 *   <tr>
+
+    				 /*  <tr>
                   <th>주차</th>
                   <td>발렛 </td>
                 </tr>
@@ -140,7 +143,7 @@ public class FoodManager {
                   <th style="vertical-align:top;">영업시간</th>
                   <td>12:00 - 22:00</td>
                 </tr>
-    				 */
+    				*/
                     try
                     {
                         Element parking=doc2.select("table.info tr td").get(4);
@@ -161,8 +164,8 @@ public class FoodManager {
                         fvo.setTime("no");
                     }
 
-    				/*
-    				 *  <td class="menu_td">
+
+    				 /*  <td class="menu_td">
                     <ul class="Restaurant_MenuList">
                         <li class="Restaurant_MenuItem">
                           <span class="Restaurant_Menu">런치 오마카세</span>
