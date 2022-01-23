@@ -30,4 +30,123 @@ public class BooksVO {
     private double score;
     private Date regdate, releasedate;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCateid() {
+        return cateid;
+    }
+
+    public void setCateid(int cateid) {
+        this.cateid = cateid;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getSalerate() {
+        return salerate;
+    }
+
+    public void setSalerate(int salerate) {
+        this.salerate = salerate;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getShipprice() {
+        return shipprice;
+    }
+
+    public void setShipprice(int shipprice) {
+        this.shipprice = shipprice;
+    }
+
+    public int getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(int isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public Date getRegdate() {
+        return regdate;
+    }
+
+    public void setRegdate(Date regdate) {
+        this.regdate = regdate;
+    }
+
+    public Date getReleasedate() {
+        return releasedate;
+    }
+
+    public void setReleasedate(Date releasedate) {
+        this.releasedate = releasedate;
+    }
 }

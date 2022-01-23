@@ -1,14 +1,13 @@
 package manager;
 
-import dao.BookDAO;
-import dao.DetailCategoryVO;
-import dao.MainCategoryVO;
-import dao.SubCategoryVO;
+import dao.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainCateManager {
@@ -16,7 +15,8 @@ public class MainCateManager {
         MainCateManager mcm = new MainCateManager();
 //        mcm.mainCate();
 //        mcm.subCate();
-        mcm.deCate();
+//        mcm.detailCate();
+          mcm.getBookInfo();
     }
 
     public void mainCate() {
@@ -65,12 +65,12 @@ public class MainCateManager {
         }
     }
 
-    public void deCate() {
+    public void detailCate() {
         try {
             BookDAO dao = new BookDAO();
             List<MainCategoryVO> mList = dao.MainCateList();
             DetailCategoryVO vo = new DetailCategoryVO();
-            System.out.println(mList.get(0).getLink());
+//            System.out.println(mList.get(0).getLink());
 
             int num = 0;  //subID 외래키를 위해 설정
             for (int i = 0; i < 2; i++) {
@@ -97,4 +97,52 @@ public class MainCateManager {
             e.printStackTrace();
         }
     }
+
+    public void getBookInfo(){
+        try{
+            BookDAO dao = new BookDAO();
+            List<DetailCategoryVO> list = dao.DetailCateList();
+            BooksVO bvo = new BooksVO();
+            for(int i = 0; i< list.size();i++){
+                bvo.setCateid(list.get(i).getId());
+                Document doc = Jsoup.connect(list.get(i).getLink()+"?PageNumber=1").get();
+                System.out.println(list.get(i).getLink()+"?PageNumber=1");
+                Elements link = doc.select("span.imgBdr a");
+                for(int j =0;i< link.size();j++){
+                    Document doc2 = Jsoup.connect("http://www.yes24.com"+link.get(j).attr("href")).get();
+                    // 포스터
+                    Element poster = doc2.selectFirst("div.gd_imgArea img");
+                    System.out.println(poster.attr("src"));
+                    bvo.setPoster(poster.attr("src"));
+
+                    // 책 제목
+                    Element title = doc2.selectFirst("div.gd_titArea h2.gd_name");
+                    System.out.println(title.text());
+                    bvo.setName(title.text());
+
+                    // 부가 제목 (추가 미정)
+
+                    // 저자
+                    Element author = doc2.selectFirst("span.gd_auth");
+                    System.out.println(author.text());
+                    bvo.setAuthor(author.text());
+
+                    // 출판사
+                    Element publisher = doc.selectFirst("span.gd_pub");
+                    System.out.println(publisher.text());
+                    bvo.setPublisher(publisher.text());
+
+                    // 출간일
+                    Element regdate = doc2.selectFirst("span.gd_date");
+                    System.out.println(regdate.text());
+                    bvo.setRegdate(Date.valueOf(regdate.text()));
+
+
+                 }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }

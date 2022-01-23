@@ -125,6 +125,31 @@ public class BookDAO {
         return list;
     }
 
+    public List<DetailCategoryVO> DetailCateList(){ //MainCategory를 가져온다
+        List<DetailCategoryVO> list = new ArrayList<>();
+        try{
+            getConnection();
+            String sql ="SELECT id,sub_id,name,link FROM detail_category ORDER BY id";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                DetailCategoryVO vo = new DetailCategoryVO();
+                vo.setId(rs.getInt(1));
+                vo.setSubid(rs.getInt(2));
+                vo.setName(rs.getString(3));
+                vo.setLink(rs.getString(4));
+
+                list.add(vo);
+            }
+            rs.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            disConnection();
+        }
+        return list;
+    }
+
 
     public int SubCateCount(int mainCateId){
         int subCateCount = 0;
@@ -147,7 +172,7 @@ public class BookDAO {
 
 
 
-   /* public List<MainCategoryVO> MainSubCateList(){ // SubCategory를 가져온다
+    public List<MainCategoryVO> MainSubCateList(){ // main과 sub카테고리를 join한다.
         List<MainCategoryVO> list = new ArrayList<>();
         try{
             getConnection();
@@ -172,7 +197,7 @@ public class BookDAO {
             disConnection();
         }
         return list;
-    }*/
+    }
 
 
     /*public int SubIdSearch(String name){
