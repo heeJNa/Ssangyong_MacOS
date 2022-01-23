@@ -11,6 +11,15 @@ public class SubCategoryVO {
     private int id;
     private int mainid;
     private String name;
+    private String link;
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
 
     public int getId() {
         return id;
