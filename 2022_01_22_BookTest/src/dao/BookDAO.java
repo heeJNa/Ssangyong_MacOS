@@ -93,6 +93,22 @@ public class BookDAO {
             getConnection();
             String sql = "INSERT INTO books_test VALUES((SELECT NVL(MAX(id),1)+1 FROM book_test),?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = conn.prepareStatement(sql);
+            ps.setInt(1,vo.getCateid());
+            ps.setString(2,vo.getName());
+            ps.setString(3,vo.getContent());
+            ps.setString(4,vo.getAuthor());
+            ps.setString(5,vo.getPublisher());
+            ps.setDate(6,vo.getRegdate());
+            ps.setString(7,vo.getPoster());
+            ps.setString(8,vo.getPrice());
+            ps.setDouble(9,vo.getScore());
+            ps.setString(10,vo.getIsbn());
+            ps.setDate(11,vo.getReleasedate());
+            ps.setInt(12,vo.getSalerate());
+            ps.setString(13,vo.getShipprice());
+            ps.setInt(14,vo.getQuantity());
+
+            ps.executeUpdate();
 
         }catch (Exception e){
             e.printStackTrace();

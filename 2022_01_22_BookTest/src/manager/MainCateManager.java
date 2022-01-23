@@ -7,8 +7,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MainCateManager {
     public static void main(String[] args) {
@@ -128,17 +130,93 @@ public class MainCateManager {
                     bvo.setAuthor(author.text());
 
                     // 출판사
-                    Element publisher = doc.selectFirst("span.gd_pub");
+                    Element publisher = doc2.selectFirst("span.gd_pub ");
                     System.out.println(publisher.text());
                     bvo.setPublisher(publisher.text());
 
-                    // 출간일
+                    // 출간일(1안)
                     Element regdate = doc2.selectFirst("span.gd_date");
-                    System.out.println(regdate.text());
-                    bvo.setRegdate(Date.valueOf(regdate.text()));
+                    String[] s = regdate.text().split(" ");
+                    String date = s[0].substring(0,s[0].lastIndexOf('년'))+"-"+
+                            s[1].substring(0,s[1].lastIndexOf('월'))+"-"+
+                            s[2].substring(0,s[2].lastIndexOf('일'));
+                    System.out.println(date);
+                    bvo.setRegdate(Date.valueOf(date));
 
+                    // 평점
+                    Element score = doc2.selectFirst("span.gd_rating em.yes_b");
+                    System.out.println(score.text());
+                    bvo.setScore(Double.parseDouble(score.text()));
 
-                 }
+                    //가격 (정가
+                    Element price = doc2.selectFirst("div.gd_infoTb span");
+                    System.out.println(price.text());
+                    bvo.setPrice(price.text());
+
+                    // 할인율
+                    Element salesrate =doc2.selectFirst("tr.accentRow td");
+                    String rate = salesrate.text().substring(salesrate.text().indexOf('(')+1,salesrate.text().lastIndexOf('%'));
+                    System.out.println(rate);
+                    bvo.setSalerate(Integer.parseInt(rate));
+
+                    // 배송비 (1안)
+                    Element shipprice = doc2.selectFirst("li.deli_des");
+                    String ship = shipprice.text().substring(shipprice.text().indexOf(':')).trim();
+                    Element shiptrim = doc2.selectFirst("li.deli_des  a");
+//                    System.out.println(shiptrim.text());
+                    ship = ship.replaceAll(shiptrim.text()," ").trim();
+//                    System.out.println(ship);
+                    bvo.setShipprice(ship);
+
+                    // 출고 예정일(어려움)
+
+                    // 책 쪽수, 무게, 크기 (추가 미정)
+
+                    // 출간일, 책(쪽수,무게,크기) , ISBN13, 배송비
+                    Elements bookinfo = doc2.select("table.tb_nor td.lastcol");
+                    // 출간일
+                    String[] s2 = bookinfo.get(0).text().split(" ");
+                    String date2 = s2[0].substring(0,s2[0].lastIndexOf('년'))+"-"+
+                            s2[1].substring(0,s2[1].lastIndexOf('월'))+"-"+
+                            s2[2].substring(0,s2[2].lastIndexOf('일'));
+                    System.out.println(date2);
+//                    bvo.setRegdate(Date.valueOf(date2));
+
+                    // 책(쪽수,무게,크기)
+                    String booksize = bookinfo.get(1).text().substring(bookinfo.get(1).text().indexOf('기')+1).trim();
+                    String [] size = booksize.split("\\|");
+                    for (String z : size )
+                        System.out.println(z.trim());
+
+                    // ISBN13
+                    String isbn = bookinfo.get(2).text().replaceAll("ISBN13","").trim();
+                    System.out.println(isbn);
+                    bvo.setIsbn(isbn);
+
+                    // 배송비
+                    String shipprice2 = bookinfo.get(4).text().substring(bookinfo.get(4).text().lastIndexOf(':')+1).trim();
+                    System.out.println(shipprice2);
+//                    bvo.setShipprice(shipprice2);
+
+                    //태그 (추가 미정)
+                    try {
+
+                    Element tag = doc2.selectFirst("div.gd_tagArea");
+                    System.out.println(tag.text());
+                    }catch (NullPointerException e){
+                        System.out.println("태그 없음");
+
+                    }
+
+                    // 책 소개
+                    Element content = doc2.selectFirst("textarea.txtContentText");
+                    System.out.println(content.text().replaceAll("<.*[a-zA-Z]*.>","").replace("\n","").trim());
+                    bvo.setContent(content.text().replaceAll("<.*[a-zA-Z]*.>","").replace("\n","").trim());
+
+                    // 목차 (추가 미정)
+
+//                    dao.InsertBook(bvo);
+               }
             }
         }catch (Exception e){
             e.printStackTrace();

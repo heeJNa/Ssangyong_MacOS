@@ -1,9 +1,8 @@
 package dao;
 
-import java.util.Date;
-
+import java.sql.*;
 /*create table books_test
-       create table books_test
+   create table books_test
 (
     id           number,
     category_id  number,
@@ -13,9 +12,9 @@ import java.util.Date;
     publisher   varchar2(100) constraint book_publisher_nn not null,
     regdate    date constraint book_regdate_nn not null ,
     poster       varchar2(1000) constraint book_poster_nn not null ,
-    price        number constraint book_price_nn not null ,
+    price        varchar2(100) constraint book_price_nn not null ,
     score        number(2, 1) constraint book_score_nn not null ,
-    isbn    number constraint book_isbn_nn not null,
+    isbn    varchar2(30) constraint book_isbn_nn not null,
     release_date date,
     salerate number,
     ship_price number constraint book_sp_nn not null ,
@@ -25,8 +24,8 @@ import java.util.Date;
 );
 */
 public class BooksVO {
-    private int id, cateid, price, salerate, quantity, shipprice, isbn;
-    private String name,content,author,publisher,poster;
+    private int id, cateid, salerate, quantity;
+    private String name,content,author,publisher,poster, price,isbn,shipprice;
     private double score;
     private Date regdate, releasedate;
 
@@ -46,11 +45,11 @@ public class BooksVO {
         this.cateid = cateid;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
@@ -70,19 +69,19 @@ public class BooksVO {
         this.quantity = quantity;
     }
 
-    public int getShipprice() {
+    public String getShipprice() {
         return shipprice;
     }
 
-    public void setShipprice(int shipprice) {
+    public void setShipprice(String shipprice) {
         this.shipprice = shipprice;
     }
 
-    public int getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(int isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 
