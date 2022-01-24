@@ -209,10 +209,14 @@ public class MainCateManager {
                     }
 
                     // 책 소개
-                    Element content = doc2.selectFirst("textarea.txtContentText");
-                    System.out.println(content.text().replaceAll("<.*[a-zA-Z]*.>","").replace("\n","").trim());
-                    bvo.setContent(content.text().replaceAll("<.*[a-zA-Z]*.>","").replace("\n","").trim());
-
+                    try {
+                        Element content = doc2.selectFirst("textarea.txtContentText");
+                        System.out.println(content.text().replaceAll("<.*[^가-힣]*.>", "").replace("\n", "").trim());
+                        bvo.setContent(content.text().replaceAll("<.*[^가-힣]*.>", "").replace("\n", "").trim());
+                    }catch (Exception e){
+                        System.out.println("");
+                        bvo.setContent("");
+                    }
                     // 목차 (추가 미정)
 
 //                    dao.InsertBook(bvo);
