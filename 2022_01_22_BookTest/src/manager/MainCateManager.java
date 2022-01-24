@@ -7,10 +7,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class MainCateManager {
     public static void main(String[] args) {
@@ -67,6 +64,7 @@ public class MainCateManager {
         }
     }
 
+    // 더 세부적인 카테고리(여기 까지는 미정)
     public void detailCate() {
         try {
             BookDAO dao = new BookDAO();
@@ -100,6 +98,7 @@ public class MainCateManager {
         }
     }
 
+    // 세부적인 카테고리에서 받아옴. 세부카테고리 미사용시 subcate에서 주간베스트로 진입하여 데이터 긁어올 예정
     public void getBookInfo(){
         try{
             BookDAO dao = new BookDAO();
