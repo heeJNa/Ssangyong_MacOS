@@ -214,6 +214,7 @@ public class MainCateManager {
                         System.out.println(content.text().replaceAll("<.*[^가-힣]*.>", "").replace("\n", "").trim());
                         bvo.setContent(content.text().replaceAll("<.*[^가-힣]*.>", "").replace("\n", "").trim());
                     }catch (Exception e){
+                        // 책 소개가 없는 것은 출판사 리뷰가 있는 것도 있는데 추가할지느 미정.
                         System.out.println("");
                         bvo.setContent("");
                     }
