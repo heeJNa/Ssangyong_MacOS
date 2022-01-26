@@ -1,29 +1,7 @@
 <component name="libraryTable">
   <library name="JAX-WS-Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2" type="JAX-WS">
     <properties version="Glassfish / JAX-WS 2.2 RI / Metro 1.X / JWSDP 2.2" />
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/javax.annotation.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/gmbal-api-only.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/ha-api.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/jaxb-api.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/jaxws-api.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/FastInoset.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/jaxws-tools.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/jaxb-impl.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/jaxws-rt.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/jaxb-xjc.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/jsr181-api.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/saaj-api.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/management-api.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/mimepull.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/policy.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/saaj-impl.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/mail.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/stax2-api.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/stax-ex.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/streambuffer.jar!/" />
-      <root url="jar://$PROJECT_DIR$/2021_12_30_DataAcqusition/lib/woodstox-core-asl.jar!/" />
-    </CLASSES>
+    <CLASSES />
     <JAVADOC />
     <SOURCES />
   </library>

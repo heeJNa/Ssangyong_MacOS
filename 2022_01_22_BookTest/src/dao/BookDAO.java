@@ -55,7 +55,7 @@ public class BookDAO {
         try {
             getConnection();
             String sql="INSERT INTO sub_category VALUES " +
-                    "(subcate_id_seq.nextval,?,?,?)";
+                    "((select nvl(max(id)+1,1)FROM sub_category),?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,vo.getMainid());
             ps.setString(2,vo.getName());
@@ -91,7 +91,7 @@ public class BookDAO {
     public void InsertBook(BooksVO vo){
         try{
             getConnection();
-            String sql = "INSERT INTO books_test VALUES((SELECT NVL(MAX(id),1)+1 FROM book_test),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO books_test VALUES((SELECT NVL(MAX(id),1)+1 FROM books_test),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,vo.getCateid());
             ps.setString(2,vo.getName());
@@ -150,6 +150,33 @@ public class BookDAO {
             getConnection();
             String sql ="SELECT id,main_id,name,link FROM sub_category ORDER BY id";
             ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                SubCategoryVO vo = new SubCategoryVO();
+                vo.setId(rs.getInt(1));
+                vo.setMainid(rs.getInt(2));
+                vo.setName(rs.getString(3));
+                vo.setLink(rs.getString(4));
+
+                list.add(vo);
+            }
+            rs.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            disConnection();
+        }
+        return list;
+    }
+
+
+    public List<SubCategoryVO> SubCateList(int main_id){ //MainCategory를 가져온다
+        List<SubCategoryVO> list = new ArrayList<>();
+        try{
+            getConnection();
+            String sql ="SELECT id,main_id,name,link FROM sub_category WHERE main_id=? ORDER BY id";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,main_id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 SubCategoryVO vo = new SubCategoryVO();
