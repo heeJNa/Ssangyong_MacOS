@@ -79,27 +79,26 @@ public class MainCateManager {
             for (int i = 0; i < list.size(); i++) {
                 Document subCateDoc = Jsoup.connect(list.get(i).getLink()).get(); // subCategory에서 link를 가져온다
                 Element bestLink = subCateDoc.selectFirst("div.cateTit_sub span a"); // 주간베스트 들어가기위한 링크
-                System.out.println(bestLink.text());
                 int endPageNo = getLastPage(bestLink);
                 if(!(bestLink.text().equals("주간베스트")) || endPageNo<=6) { // 주간베스트가 없는 sub_Category일 경우 || 주간베스트 page가 5이하인 경우
                     System.out.println("주간베스트 없거나 적음 : " + list.get(i).getName());
                     for (int k = 1; k <= 20; k++) { // 20page만 가져온다. (최대 페이지로 받아올 경우 너무 많은 양이 들어옴)
                         weekBestLink.add(list.get(i).getLink() + "?PageNumber=" + k);
-                        System.out.println(weekBestLink.get(no++));
+                        System.out.println(no+". "+weekBestLink.get(no++));
                     }
                 } else {
                     System.out.print(list.get(i).getName() + " : ");
                     System.out.println(bestLink.attr("href"));
-
-                    for (int j = 0; j < endPageNo; j++) { // 테스트를 위해 10으로 설정, 실제 데이터를 받아올때는 j<end로 변경
+                    for (int j = 0; j < endPageNo; j++) {  // j<endPageNo 값을 이용해서 얼마나 가져올지 정할 수 있다.
                         weekBestLink.add("http://www.yes24.com" + bestLink.attr("href") + "&PageNumber=" + (j + 1));
-                        System.out.println(weekBestLink.get(no++));
+                        System.out.println(no+". "+weekBestLink.get(no++));
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("========== 주간베스트 링크 추출 완료 ==========");
         return weekBestLink;
     }
 
@@ -111,7 +110,7 @@ public class MainCateManager {
             Document bestDoc = Jsoup.connect("http://www.yes24.com" + bestLink.attr("href")).get(); //해당 subCategory의 주간베스트
             Element endPage = bestDoc.selectFirst("div.yesUI_pagenS a.bgYUI.end"); // 마지막 페이지가 나와있는 곳
             lasgPage = Integer.parseInt(endPage.attr("href").substring(endPage.attr("href").lastIndexOf('=') + 1).trim()); // 마지막 페이지 번호
-            System.out.println("마지막 페이지 : " + lasgPage);
+//            System.out.println("마지막 페이지 : " + lasgPage);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -126,13 +125,14 @@ public class MainCateManager {
             BookDAO dao = new BookDAO();
             BooksVO bvo = new BooksVO();
             List<String> weekBestList = weekBestLink();
-            // weekBestLink()의 for문의 i 초기값을 바꾸면 일치하지 않는 문제 해결해야함.
-            int cateid=0;
+            // weekBestLink()의 for문의 i 초기값을 바꾸면 일치하지 않는 문제 해결해야함. (해결완료)
             for (int j = 0; j < weekBestList.size(); j++) {
+                String categoryURL = weekBestList.get(j).substring(weekBestList.get(j).indexOf('0'),weekBestList.get(j).indexOf("?")).trim();
+                System.out.println(weekBestList.get(j).substring(weekBestList.get(j).indexOf('0'),weekBestList.get(j).indexOf("?")).trim());
+                int cateid = dao.SubIdSearch(categoryURL);
+
                 Document bookDoc = Jsoup.connect(weekBestList.get(j)).get();
                 Elements bookLink = bookDoc.select("span.imgBdr a"); // 주간베스트에 출력된 책 링크
-                if(weekBestList.get(j).substring(weekBestList.get(j).lastIndexOf('=')+1).equals("1"))
-                    cateid++;
                 for (int k = 0; k < bookLink.size(); k++) {
                     try {
                         Document doc2 = Jsoup.connect("http://www.yes24.com" + bookLink.get(k).attr("href")).get();
@@ -279,7 +279,7 @@ public class MainCateManager {
                     // 목차 (추가 미정)
 
                     System.out.println("===========================================================================================================================");
-//                    dao.InsertBook(bvo);
+                    dao.InsertBook(bvo);
                 }
             }
         } catch (Exception e) {

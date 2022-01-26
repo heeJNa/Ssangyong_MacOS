@@ -170,30 +170,7 @@ public class BookDAO {
     }
 
 
-    /*public List<DetailCategoryVO> DetailCateList(){
-        List<DetailCategoryVO> list = new ArrayList<>();
-        try{
-            getConnection();
-            String sql ="SELECT id,sub_id,name,link FROM detail_category ORDER BY id";
-            ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                DetailCategoryVO vo = new DetailCategoryVO();
-                vo.setId(rs.getInt(1));
-                vo.setSubid(rs.getInt(2));
-                vo.setName(rs.getString(3));
-                vo.setLink(rs.getString(4));
 
-                list.add(vo);
-            }
-            rs.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            disConnection();
-        }
-        return list;
-    }*/
 
 
     public int SubCateCount(int mainCateId){
@@ -245,13 +222,13 @@ public class BookDAO {
     }
 
 
-    /*public int SubIdSearch(String name){
+    public int SubIdSearch(String link){
         int subID = 0;
         try{
             getConnection();
-            String sql = "SELECT id FROM sub_category WHERE name = ?";
+            String sql = "SELECT id FROM sub_category WHERE link LIKE '%'||?||'%'";
             ps = conn.prepareStatement(sql);
-            ps.setString(1,name);
+            ps.setString(1,link);
             ResultSet rs = ps.executeQuery();
             rs.next();
             subID = rs.getInt(1);
@@ -261,5 +238,30 @@ public class BookDAO {
             disConnection();
         }
         return subID;
-    }*/
+    }
 }
+
+/*public List<DetailCategoryVO> DetailCateList(){
+        List<DetailCategoryVO> list = new ArrayList<>();
+        try{
+            getConnection();
+            String sql ="SELECT id,sub_id,name,link FROM detail_category ORDER BY id";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                DetailCategoryVO vo = new DetailCategoryVO();
+                vo.setId(rs.getInt(1));
+                vo.setSubid(rs.getInt(2));
+                vo.setName(rs.getString(3));
+                vo.setLink(rs.getString(4));
+
+                list.add(vo);
+            }
+            rs.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            disConnection();
+        }
+        return list;
+    }*/
