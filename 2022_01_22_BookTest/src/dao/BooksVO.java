@@ -24,17 +24,17 @@ import java.sql.*;
 );
 */
 public class BooksVO {
-    private int id, cateid, salerate, quantity;
-    private String name,content,author,publisher,poster, price,isbn,shipprice;
+    private int  cateid, salerate, quantity;
+    private String name,content,author,publisher,poster, price,isbn,shipprice,status;
     private double score;
     private Date regdate, releasedate;
 
-    public int getId() {
-        return id;
+    public String getStatus() {
+        return status;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getCateid() {

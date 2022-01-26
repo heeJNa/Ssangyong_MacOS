@@ -91,7 +91,7 @@ public class BookDAO {
     public void InsertBook(BooksVO vo){
         try{
             getConnection();
-            String sql = "INSERT INTO books_test VALUES((SELECT NVL(MAX(id),1)+1 FROM book_test),?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO books_test VALUES((SELECT NVL(MAX(id),1)+1 FROM book_test),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,vo.getCateid());
             ps.setString(2,vo.getName());
@@ -107,6 +107,7 @@ public class BookDAO {
             ps.setInt(12,vo.getSalerate());
             ps.setString(13,vo.getShipprice());
             ps.setInt(14,vo.getQuantity());
+            ps.setString(15,vo.getStatus());
 
             ps.executeUpdate();
 
@@ -141,7 +142,35 @@ public class BookDAO {
         return list;
     }
 
-    public List<DetailCategoryVO> DetailCateList(){ //MainCategory를 가져온다
+
+
+    public List<SubCategoryVO> SubCateList(){ //MainCategory를 가져온다
+        List<SubCategoryVO> list = new ArrayList<>();
+        try{
+            getConnection();
+            String sql ="SELECT id,main_id,name,link FROM sub_category ORDER BY id";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                SubCategoryVO vo = new SubCategoryVO();
+                vo.setId(rs.getInt(1));
+                vo.setMainid(rs.getInt(2));
+                vo.setName(rs.getString(3));
+                vo.setLink(rs.getString(4));
+
+                list.add(vo);
+            }
+            rs.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            disConnection();
+        }
+        return list;
+    }
+
+
+    /*public List<DetailCategoryVO> DetailCateList(){
         List<DetailCategoryVO> list = new ArrayList<>();
         try{
             getConnection();
@@ -164,7 +193,7 @@ public class BookDAO {
             disConnection();
         }
         return list;
-    }
+    }*/
 
 
     public int SubCateCount(int mainCateId){
