@@ -7,7 +7,7 @@ import java.util.*;
 public class BookDAO {
     private Connection conn;
     private PreparedStatement ps;
-    private final String URL="jdbc:oracle:thin:@db202112271622_medium?TNS_ADMIN=/Users/kimheejun/Documents/Wallet_DB202112271622";
+    private final String URL="jdbc:oracle:thin:@oracle_medium?TNS_ADMIN=/Users/kimheejun/Documents/Wallet_oracle";
 
     public BookDAO(){
         try{
@@ -100,12 +100,12 @@ public class BookDAO {
             ps.setString(5,vo.getPublisher());
             ps.setDate(6,vo.getRegdate());
             ps.setString(7,vo.getPoster());
-            ps.setString(8,vo.getPrice());
+            ps.setInt(8,vo.getPrice());
             ps.setDouble(9,vo.getScore());
             ps.setString(10,vo.getIsbn());
             ps.setDate(11,vo.getReleasedate());
             ps.setInt(12,vo.getSalerate());
-            ps.setString(13,vo.getShipprice());
+            ps.setString(13,vo.getSize());
             ps.setInt(14,vo.getQuantity());
             ps.setString(15,vo.getStatus());
 
@@ -144,7 +144,7 @@ public class BookDAO {
 
 
 
-    public List<SubCategoryVO> SubCateList(){ //MainCategory를 가져온다
+    public List<SubCategoryVO> SubCateList(){ //subCategory를 가져온다
         List<SubCategoryVO> list = new ArrayList<>();
         try{
             getConnection();
@@ -170,7 +170,7 @@ public class BookDAO {
     }
 
 
-    public List<SubCategoryVO> SubCateList(int main_id){ //MainCategory를 가져온다
+    public List<SubCategoryVO> SubCateList(int main_id){ //subCategory를 가져온다
         List<SubCategoryVO> list = new ArrayList<>();
         try{
             getConnection();
@@ -196,10 +196,6 @@ public class BookDAO {
         return list;
     }
 
-
-
-
-
     public int SubCateCount(int mainCateId){
         int subCateCount = 0;
         try{
@@ -220,8 +216,8 @@ public class BookDAO {
 
 
 
-
-    public List<MainCategoryVO> MainSubCateList(){ // main과 sub카테고리를 join한다.
+    // main과 sub카테고리를 join한다.
+    /*public List<MainCategoryVO> MainSubCateList(){
         List<MainCategoryVO> list = new ArrayList<>();
         try{
             getConnection();
@@ -246,8 +242,25 @@ public class BookDAO {
             disConnection();
         }
         return list;
-    }
+    }*/
 
+    public String MainNameSearch(int sub_id){
+        String mainName = "";
+        try{
+            getConnection();
+            String sql = "SELECT name FROM main_category WHERE id=(SELECT main_id FROM sub_category where id=?)";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,sub_id);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            mainName = rs.getString(1);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            disConnection();
+        }
+        return mainName;
+    }
 
     public int SubIdSearch(String link){
         int subID = 0;

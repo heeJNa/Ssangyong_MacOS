@@ -33,7 +33,7 @@ public class MusicDao implements DataBase {
     // 오라클로 명령어 전송
     private PreparedStatement ps;
     // 오라클 주소 => 대소문자 구분 x
-    private final String URL="jdbc:oracle:thin:@db202112271622_medium?TNS_ADMIN=/Users/kimheejun/Documents/Wallet_DB202112271622";
+    private final String URL="jdbc:oracle:thin:@oracle_medium?TNS_ADMIN=/Users/kimheejun/Documents/Wallet_oracle";
     // 1. 드라이버 등록 : 한번만 수행 => 생성자
     public MusicDao(){
         try {

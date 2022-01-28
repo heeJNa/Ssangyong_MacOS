@@ -24,8 +24,8 @@ import java.sql.*;
 );
 */
 public class BooksVO {
-    private int  cateid, salerate, quantity;
-    private String name,content,author,publisher,poster, price,isbn,shipprice,status;
+    private int  cateid, salerate, quantity,price;
+    private String name,content,author,publisher,poster,isbn,size,status;
     private double score;
     private Date regdate, releasedate;
 
@@ -45,11 +45,11 @@ public class BooksVO {
         this.cateid = cateid;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -69,12 +69,12 @@ public class BooksVO {
         this.quantity = quantity;
     }
 
-    public String getShipprice() {
-        return shipprice;
+    public String getSize() {
+        return size;
     }
 
-    public void setShipprice(String shipprice) {
-        this.shipprice = shipprice;
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getIsbn() {
