@@ -123,7 +123,7 @@ public class MainCateManager {
                         /* 논의 후 결정 */
                     for (int k = 1; k <= 1; k++) { // 20page만 가져온다. (최대 페이지로 받아올 경우 너무 많은 양이 들어옴)
                         weekBestLink.add(list.get(i).getLink() + "?PageNumber=" + k);
-                        System.out.println(no+". "+weekBestLink.get(no++));
+                        System.out.println((no+1)+". "+weekBestLink.get(no++));
                     }
                 } else {
                     System.out.print(list.get(i).getName() + " : ");
@@ -192,7 +192,7 @@ public class MainCateManager {
                     // 책 제목
                     Element title = doc2.selectFirst("div.gd_titArea h2.gd_name");
                     System.out.println("책 제목 : " + title.text());
-                    bvo.setName(title.text());
+                    bvo.setTitle(title.text());
 
                     // 부가 제목
 
@@ -300,6 +300,7 @@ public class MainCateManager {
                     // 책의 쪽수, 무게, 크기, eBook은 파일 용량
                     try { // [연재] 열혈강호, 정령왕 엘퀴네스 => error남 => 이유가 뭐지??
                         Elements bookInfo = doc2.select("tbody.b_size td");
+
                         if (dao.MainNameSearch(cateid).equalsIgnoreCase("ebook")) {
                             if(bookInfo.get(3).text().contains("|") || bookInfo.get(3).text().contains("파일")) {
                                 String eSize = bookInfo.get(3).text()
@@ -337,10 +338,31 @@ public class MainCateManager {
                         System.out.println("error");
                     }
 
-                    System.out.println("===========================================================================================================================");
+                    try {
+                        Element tag = doc2.selectFirst("div.gd_tagArea");
+                        System.out.println("태그 : " + tag.text());
+
+                        bvo.setTag(tag.text());
+                    } catch (NullPointerException e) {
+                        System.out.println("태그 없음");
+                    }
+
+                    // 판매지수, 판매량
+                    Element sellCount = doc2.selectFirst("span.gd_sellNum");
+                    String count = sellCount.text();
+                    count = count.substring(count.indexOf("수")+1,count.lastIndexOf("판매지수"))
+                            .replace(",","")
+                            .trim();
+                    int sCount = Integer.parseInt(count);
+                    System.out.println("판매지수 : "+ sCount);
+                    bvo.setSellCount(sCount);
+
+
+
 
                     //dao.InsertBook(bvo); // DataBase에 삽입
 
+                    System.out.println("===========================================================================================================================");
                     // 출고 예정일 => 대부분 javascript로 작성되어 있음
 
                     // 할인가 (정가와 할인율 이용해서 계산 가능)
@@ -366,15 +388,9 @@ public class MainCateManager {
                         bvo.setShipprice("3000원");
                     }*/
 
-                    //태그 (추가 미정, 수정 필요)
-                    /*try {
-                        Element tag = doc2.selectFirst("div.gd_tagArea");
-                        System.out.println("태그 : " + tag.text());
-                    } catch (NullPointerException e) {
-                        System.out.println("태그 없음");
-                    }*/
+                    //태그
 
-                    // 목차 (추가x)
+
                 }
             }
         } catch (Exception e) {

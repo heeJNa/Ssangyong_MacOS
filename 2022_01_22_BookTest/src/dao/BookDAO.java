@@ -93,21 +93,22 @@ public class BookDAO {
             getConnection();
             String sql = "INSERT INTO books_test VALUES((SELECT NVL(MAX(id),1)+1 FROM books_test),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = conn.prepareStatement(sql);
-            ps.setInt(1,vo.getCateid());
-            ps.setString(2,vo.getName());
-            ps.setString(3,vo.getContent());
-            ps.setString(4,vo.getAuthor());
-            ps.setString(5,vo.getPublisher());
-            ps.setDate(6,vo.getRegdate());
-            ps.setString(7,vo.getPoster());
-            ps.setInt(8,vo.getPrice());
-            ps.setDouble(9,vo.getScore());
-            ps.setString(10,vo.getIsbn());
-            ps.setDate(11,vo.getReleasedate());
-            ps.setInt(12,vo.getSalerate());
-            ps.setString(13,vo.getSize());
-            ps.setInt(14,vo.getQuantity());
-            ps.setString(15,vo.getStatus());
+            ps.setInt(1,vo.getCateid()); // 서브 카테고리 외래키
+            ps.setString(2,vo.getTitle()); //책 제목
+            ps.setString(3,vo.getAuthor()); // 책 저자
+            ps.setString(4,vo.getPublisher()); // 책 출판사
+            ps.setDate(5,vo.getRegdate()); // 출간일
+            ps.setString(6,vo.getPoster()); // 책 포스터
+            ps.setString(7,vo.getContent()); // 책 소개
+            ps.setInt(8,vo.getPrice()); // 책 정가
+            ps.setInt(9,vo.getSalerate()); // 책 할인율
+            ps.setDouble(10,vo.getScore()); // 책 평점
+            ps.setString(11,vo.getIsbn()); // isbn13
+            ps.setString(12,vo.getSize()); // 책 무게,쪽수,크기(파일용량)
+            ps.setString(13,vo.getStatus()); // 판매상태
+            ps.setInt(14,vo.getSellCount()); // 판매지수(판매량)
+            ps.setString(15,vo.getTag());
+
 
             ps.executeUpdate();
 

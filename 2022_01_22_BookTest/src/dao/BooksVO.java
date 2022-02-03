@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.*;
+
 /*create table books_test
    create table books_test
 (
@@ -24,10 +25,18 @@ import java.sql.*;
 );
 */
 public class BooksVO {
-    private int  cateid, salerate, quantity,price;
-    private String name,content,author,publisher,poster,isbn,size,status;
+    private int cateid, salerate, price, sellCount;
+    private String title, content, author, publisher, poster, isbn, size, status, Tag;
     private double score;
-    private Date regdate, releasedate;
+    private Date regdate;
+
+    public int getSellCount() {
+        return sellCount;
+    }
+
+    public void setSellCount(int sellCount) {
+        this.sellCount = sellCount;
+    }
 
     public String getStatus() {
         return status;
@@ -61,14 +70,6 @@ public class BooksVO {
         this.salerate = salerate;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public String getSize() {
         return size;
     }
@@ -85,12 +86,12 @@ public class BooksVO {
         this.isbn = isbn;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
@@ -141,11 +142,11 @@ public class BooksVO {
         this.regdate = regdate;
     }
 
-    public Date getReleasedate() {
-        return releasedate;
+    public String getTag() {
+        return Tag;
     }
 
-    public void setReleasedate(Date releasedate) {
-        this.releasedate = releasedate;
+    public void setTag(String tag) {
+        Tag = tag;
     }
 }
