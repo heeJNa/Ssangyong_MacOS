@@ -240,14 +240,10 @@ public class MainCateManager {
                     // 책 소개
                     try {
                         Element content = doc2.selectFirst("textarea.txtContentText");
-                        /* HTML태그들이 포함 되어있어 삭제하기위해 replaceAll() 사용함 */
-                        String cont = content.text().replace("<b>", "");
-                        cont = cont.replace("<br/>", "");
-                        cont = cont.replace("<b>", "");
-                        cont = cont.replaceAll("<.*[^가-힣]*.>", ""); // 이것만으로 해결 안되는 놈이 있음...
-                        cont = cont.replace("\n", "");
-                        System.out.println("책 소개 : " + cont);
-                        bvo.setContent(cont.trim());
+                        /* HTML태그들이 포함 */
+                        // <br/> 형식으로 작성되어 있음.
+                        System.out.println("책 소개 : " + content.text());
+                        bvo.setContent(content.text().trim());
                     } catch (Exception e) {
                         // ** 책 소개가 없는 것은 출판사 리뷰가 있는 것도 있는데 추가할지는 미정.
                         System.out.println("책소개 없음");
@@ -289,7 +285,7 @@ public class MainCateManager {
                     } catch (Exception e) {
                         // 구매리뷰가 1건도 없는 경우
                         System.out.println("첫번째 구매리뷰를 남겨주세요");
-                        bvo.setScore(0.0);
+                        bvo.setScore(0);
                     }
 
                     // 판매 상태
@@ -333,6 +329,7 @@ public class MainCateManager {
                             bvo.setIsbn(eIsbn);
                         }else{
                                 System.out.println("isbn 없음");
+                                bvo.setIsbn("");
                         }
                     }catch (Exception e){
                         System.out.println("error");
@@ -340,22 +337,27 @@ public class MainCateManager {
 
                     try {
                         Element tag = doc2.selectFirst("div.gd_tagArea");
-                        System.out.println("태그 : " + tag.text());
+                        System.out.println("태그 : " + tag.text().replace(" ",""));
 
-                        bvo.setTag(tag.text());
+                        bvo.setTag(tag.text().replace(" ",""));
                     } catch (NullPointerException e) {
                         System.out.println("태그 없음");
                     }
 
                     // 판매지수, 판매량
+                    try{
                     Element sellCount = doc2.selectFirst("span.gd_sellNum");
                     String count = sellCount.text();
                     count = count.substring(count.indexOf("수")+1,count.lastIndexOf("판매지수"))
                             .replace(",","")
                             .trim();
                     int sCount = Integer.parseInt(count);
-                    System.out.println("판매지수 : "+ sCount);
+                    System.out.println("판매 지수 : "+ sCount);
                     bvo.setSellCount(sCount);
+                    }catch (Exception e){
+                        System.out.println("판매 지수 : 0");
+                        bvo.setSellCount(0);
+                    }
 
 
 
@@ -400,7 +402,7 @@ public class MainCateManager {
 
     /* 고민 1 : eBook 테이블은 따로 만들어야 하는가? */
 
-    // 더 세부적인 카테고리 (차는 여기까지 x)
+    // 더 세부적인 카테고리 (1차는 여기까지 x)
     private void detailCate() {
         try {
             BookDAO dao = new BookDAO();
