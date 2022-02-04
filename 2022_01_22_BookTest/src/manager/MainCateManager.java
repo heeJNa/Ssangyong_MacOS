@@ -242,8 +242,8 @@ public class MainCateManager {
                         Element content = doc2.selectFirst("textarea.txtContentText");
                         /* HTML태그들이 포함 */
                         // <br/> 형식으로 작성되어 있음.
-                        System.out.println("책 소개 : " + content.text());
-                        bvo.setContent(content.text().trim());
+                        System.out.println("책 소개 : " + content.text().replace("\n",""));
+                        bvo.setContent(content.text().trim().replace("\n",""));
                     } catch (Exception e) {
                         // ** 책 소개가 없는 것은 출판사 리뷰가 있는 것도 있는데 추가할지는 미정.
                         System.out.println("책소개 없음");
@@ -318,7 +318,7 @@ public class MainCateManager {
                             System.out.println("쪽수|무게|크기 : " + bSize);
                             bvo.setSize(bSize);
                         }
-                        // ISBN13 /* 전집 해결해야함 */
+                        // ISBN13
                         Element isbn = doc2.selectFirst("tbody.b_size");
 
                         if(isbn.text().contains("ISBN13")) {
