@@ -91,7 +91,7 @@ public class BookDAO {
     public void InsertBook(BooksVO vo){
         try{
             getConnection();
-            String sql = "INSERT INTO books_test VALUES((SELECT NVL(MAX(id),1)+1 FROM books_test),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO books VALUES((SELECT NVL(MAX(id),0)+1 FROM books),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,vo.getCateid()); // 서브 카테고리 외래키
             ps.setString(2,vo.getTitle()); //책 제목
@@ -106,8 +106,8 @@ public class BookDAO {
             ps.setString(11,vo.getIsbn()); // isbn13
             ps.setString(12,vo.getSize()); // 책 무게,쪽수,크기(파일용량)
             ps.setString(13,vo.getStatus()); // 판매상태
-            ps.setInt(14,vo.getSellCount()); // 판매지수(판매량)
-            ps.setString(15,vo.getTag());
+            ps.setString(14,vo.getTag()); // 태그
+            ps.setInt(15,vo.getSellCount());// 판매량
 
 
             ps.executeUpdate();

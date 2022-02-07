@@ -50,7 +50,7 @@ public class MainCateManager {
             Elements link = doc.select("div.quickCateSub dt a");
             String[] cate = maincate.text().split(" ");
             MainCategoryVO vo = new MainCategoryVO();
-            for (int i = 0; i < cate.length; i++) { // ebook까지만 긁어올꺼면 i<3으로 설정
+            for (int i = 0; i < 3; i++) { // ebook까지만 긁어올꺼면 i<3으로 설정
                 vo.setId(i + 1);
                 vo.setName(cate[i]);
                 vo.setLink(link.get(i).attr("href"));
@@ -69,13 +69,14 @@ public class MainCateManager {
             List<MainCategoryVO> list = dao.MainCateList();
             SubCategoryVO vo = new SubCategoryVO();
             // for(int i=0;i< list.size();i++) => 전체 다 긁어 올 시
-            for (int i = 0; i < 3; i++) { //  i<2 : 외국도서까지 / i<3 : eBook까지
+            for (int i = 0; i < list.size(); i++) { //  i<2 : 외국도서까지
                 Document doc = Jsoup.connect(list.get(i).getLink()).get();
                 Elements subcate = doc.select("div.CateLiArea li.cate2d a.lnk_cate2d");
 
                 for (int j = 0; j < subcate.size(); j++) {
                     if (subcate.get(j).text().contains("대량/법인")
-                            ||subcate.get(j).text().contains("크레마")) // 필요없는 카테고리 페이지 추가 가능
+                            ||subcate.get(j).text().contains("크레마")
+                            ||subcate.get(j).text().contains("BL")) // 필요없는 카테고리 페이지 추가 가능
                         continue;
                     System.out.println(subcate.get(j).text());
                     vo.setMainid(list.get(i).getId());
@@ -111,17 +112,17 @@ public class MainCateManager {
                 list = dao.SubCateList(choose);
             int no =0; // 출력용 증감 변수
             System.out.println("========== 주간베스트 링크 출력 ==========");
-            for (int i = 0; i < list.size(); i++) {
+            for (int i = 0; i < 10; i++) {
                 Document subCateDoc = Jsoup.connect(list.get(i).getLink()).get(); // subCategory에서 link를 가져온다
                 Element bestLink = subCateDoc.selectFirst("div.cateTit_sub span a"); // 주간베스트 들어가기위한 링크
                 int endPageNo = getLastPage(bestLink);
 
-                if(!(bestLink.text().equals("주간베스트")) || endPageNo<=6) { // 주간베스트가 없는 sub_Category일 경우 || 주간베스트 page가 5이하인 경우
+                if(!(bestLink.text().equals("주간베스트")) || endPageNo<=5) { // 주간베스트가 없는 sub_Category일 경우 || 주간베스트 page가 5이하인 경우
                     /* eBook 해결해야함 */
                     System.out.println("주간베스트 없거나 적음 : " + list.get(i).getName());
-//                    if(dao.MainNameSearch(list.get(i).getMainid()).equalsIgnoreCase("ebook")) //eBook인 경우
-                        /* 논의 후 결정 */
-                    for (int k = 1; k <= 1; k++) { // 20page만 가져온다. (최대 페이지로 받아올 경우 너무 많은 양이 들어옴)
+//                    if(dao.MainNameSearch(list.get(i).getMainid()).equalsIgnoreCase("ebook")) //eBook인 경우 오류가 있을 수도 있음 (미해결)
+                    // 한 페이지당 20권
+                    for (int k = 1; k <= 3; k++) { // 5page만 가져온다. (최대 페이지로 받아올 경우 너무 많은 양이 들어옴)
                         weekBestLink.add(list.get(i).getLink() + "?PageNumber=" + k);
                         System.out.println((no+1)+". "+weekBestLink.get(no++));
                     }
@@ -129,7 +130,7 @@ public class MainCateManager {
                     System.out.print(list.get(i).getName() + " : ");
                     System.out.println(bestLink.attr("href"));
 
-                    for (int j = 0; j < 1; j++) {  // j<endPageNo 값을 이용해서 얼마나 가져올지 정할 수 있다.
+                    for (int j = 0; j < 3; j++) {  // j<endPageNo 값을 이용해서 얼마나 가져올지 정할 수 있다.
                         weekBestLink.add("http://www.yes24.com" + bestLink.attr("href") + "&PageNumber=" + (j + 1));
                         System.out.println((no+1)+". "+weekBestLink.get(no++));
                     }
@@ -173,23 +174,22 @@ public class MainCateManager {
                 String categoryURL = weekBestList.get(j)
                         .substring(weekBestList.get(j).indexOf('0'),weekBestList.get(j).indexOf("?"))
                         .trim();
-//                System.out.println("카테고리 id : " + weekBestList.get(j).substring(weekBestList.get(j).indexOf('0'),weekBestList.get(j).indexOf("?")).trim());
                 int cateid = dao.SubIdSearch(categoryURL); //해당 페이지에 sub_category받아오기
 
                 Document bookDoc = Jsoup.connect(weekBestList.get(j)).get();
                 Elements bookLink = bookDoc.select("span.imgBdr a"); // 링크에 출력된 책 링크
                 Elements imglink = bookDoc.select("span.imgBdr img"); //19세 검사를 위해 전달
-                for (int k = 0; k < 5; k++) { // 20개씩 가져온다 => bookLink.size()
+                for (int k = 0; k < bookLink.size(); k++) { // 20개씩 가져온다 => bookLink.size()
                     if (imglink.get(k).attr("src").contains("pd_19_L")) { // 19세 이상은 제외
                         continue; // for문은 continue사용 시 증감함
                     }
-
                     Document doc2 = Jsoup.connect("http://www.yes24.com" + bookLink.get(k).attr("href")).get();
+
+                    // 서브 카테고리 id (not null, foreign key)
+                    System.out.println("카테고리 id : " + cateid);
                     bvo.setCateid(cateid);
 
-                    System.out.println("카테고리 id : " + bvo.getCateid());
-
-                    // 책 제목
+                    // 책 제목 (not null)
                     Element title = doc2.selectFirst("div.gd_titArea h2.gd_name");
                     System.out.println("책 제목 : " + title.text());
                     bvo.setTitle(title.text());
@@ -203,8 +203,8 @@ public class MainCateManager {
                         bvo.setAuthor(author.text().trim());
                     } catch (Exception e) {
                         // ex) Me Reader &amp; 8 books Library : Peppa Pig 페파 피그 미리더 사운드북 저자는 Peppa pig 인데 실제 사이트에 입력되어 있지 않음.
-                        System.out.println("작자 미상 (DB에 공백기입)"); // 출판사 저||작자 미상 둘 중 무엇을 사용?
-                        bvo.setAuthor("");
+                        System.out.println("작자 미상 (DB에 null값 입력)"); //
+                        bvo.setAuthor(null);
                     }
 
                     // 출판사
@@ -219,11 +219,11 @@ public class MainCateManager {
                             System.out.println("출판사 : VOGUE");
                             bvo.setName("VOGUE");
                         }*/
-                        System.out.println("출판사 없음 (DB에 공백기입)");
-                        bvo.setPublisher("");
+                        System.out.println("출판사 없음 (DB에 null값 입력)");
+                        bvo.setPublisher(null);
                     }
 
-                    // 출간일(1안) Date로 바꾸기 위해 yyyy-MM-dd  형식으로 바꿈
+                    // 출간일(1안) (not null) Date로 바꾸기 위해 yyyy-MM-dd  형식으로 바꿈
                     Element regdate = doc2.selectFirst("span.gd_date");
                     String[] s = regdate.text().split(" ");
                     String date = s[0].substring(0, s[0].lastIndexOf('년')) + "-" +
@@ -232,7 +232,7 @@ public class MainCateManager {
                     System.out.println("출간일 : " + date);
                     bvo.setRegdate(Date.valueOf(date));
 
-                    // 포스터
+                    // 포스터 (not null)
                     Element poster = doc2.selectFirst("div.gd_imgArea img");
                     System.out.println("포스터 : " + poster.attr("src"));
                     bvo.setPoster(poster.attr("src").trim());
@@ -246,11 +246,11 @@ public class MainCateManager {
                         bvo.setContent(content.text().trim().replace("\n",""));
                     } catch (Exception e) {
                         // ** 책 소개가 없는 것은 출판사 리뷰가 있는 것도 있는데 추가할지는 미정.
-                        System.out.println("책소개 없음");
-                        bvo.setContent("");
+                        System.out.println("책소개 없음 (DB에 null값 입력)");
+                        bvo.setContent(null);
                     }
 
-                    // 가격 (정가)
+                    // 정가 (not null)
                     /* eBook에 [연재]로 단권/전권 가격이 따로 있는 경우가 있음 (미해결)*/
                     Element price = doc2.selectFirst("em.yes_m");
                     System.out.println("정가 : " + price.text()
@@ -280,21 +280,55 @@ public class MainCateManager {
                     // 평점
                     try {
                         Element score = doc2.selectFirst("span.gd_rating em.yes_b");
-                        System.out.println("평점 : " + score.text());
-                        bvo.setScore(Double.parseDouble(score.text()));
+                        int bscore = 0;
+                        switch ((int) Math.ceil(Double.parseDouble(score.text()))){
+                            case 9,10:
+                                bscore=5;
+                                break;
+                            case 7,8:
+                                bscore=4;
+                                break;
+                            case 5,6:
+                                bscore=3;
+                                break;
+                            case 3,4:
+                                bscore=2;
+                                break;
+                            case 1,2:
+                                bscore=1;
+                            default:
+                                bscore=0;
+                        }
+                        System.out.println("평점 : " + bscore);
+                        bvo.setScore(bscore);
                     } catch (Exception e) {
                         // 구매리뷰가 1건도 없는 경우
-                        System.out.println("첫번째 구매리뷰를 남겨주세요");
+                        System.out.println("첫번째 구매리뷰를 남겨주세요 (DB에 0입력)");
                         bvo.setScore(0);
                     }
 
-                    // 판매 상태
-                    Element status = doc2.selectFirst("p.gd_saleState");
-                    System.out.println("판매 상태 : " + status.text());
-                    bvo.setStatus(status.text().trim());
+
+                    // ISBN13
+                    Element isbn = doc2.selectFirst("tbody.b_size");
+                    try {
+                        if (isbn.text().contains("ISBN13")) {    // 전집같은경우 isbn없는 경우도 존재
+                            String eIsbn = isbn.text();
+                            int isbnIndex = eIsbn.lastIndexOf("ISBN13") + 7;
+                            eIsbn = eIsbn.substring(isbnIndex, isbnIndex + 13).trim();
+                            System.out.println("isbn : " + eIsbn);
+                            bvo.setIsbn(eIsbn);
+                        } else {
+                            System.out.println("isbn 없음 (DB에 null값 입력)");
+                            bvo.setIsbn(null);
+                        }
+                    }catch (Exception e){ // 오류뜨는 경우가 있음...
+                        System.out.println("isbn 없음 (DB에 null값 입력)");
+                        bvo.setIsbn(null);
+                    }
 
                     // 책의 쪽수, 무게, 크기, eBook은 파일 용량
-                    try { // [연재] 열혈강호, 정령왕 엘퀴네스 => error남 => 이유가 뭐지??
+                    // [연재] 열혈강호, 정령왕 엘퀴네스 => error남 => 이유가 뭐지??
+                    try {
                         Elements bookInfo = doc2.select("tbody.b_size td");
 
                         if (dao.MainNameSearch(cateid).equalsIgnoreCase("ebook")) {
@@ -318,33 +352,28 @@ public class MainCateManager {
                             System.out.println("쪽수|무게|크기 : " + bSize);
                             bvo.setSize(bSize);
                         }
-                        // ISBN13
-                        Element isbn = doc2.selectFirst("tbody.b_size");
-
-                        if(isbn.text().contains("ISBN13")) {
-                            String eIsbn = isbn.text();
-                            int isbnIndex = eIsbn.lastIndexOf("ISBN13") + 7;
-                            eIsbn = eIsbn.substring(isbnIndex, isbnIndex + 13).trim();
-                            System.out.println("isbn : " + eIsbn);
-                            bvo.setIsbn(eIsbn);
-                        }else{
-                                System.out.println("isbn 없음");
-                                bvo.setIsbn("");
-                        }
                     }catch (Exception e){
-                        System.out.println("error");
+                        System.out.println("size 미상(DB에 null입력)");
+                        bvo.setSize(null);
                     }
 
+                    // 판매 상태 (not null)
+                    Element status = doc2.selectFirst("p.gd_saleState");
+                    System.out.println("판매 상태 : " + status.text().replace(" ",""));
+                    bvo.setStatus(status.text().replace(" ","").trim());
+
+                    //tag
                     try {
                         Element tag = doc2.selectFirst("div.gd_tagArea");
                         System.out.println("태그 : " + tag.text().replace(" ",""));
 
                         bvo.setTag(tag.text().replace(" ",""));
                     } catch (NullPointerException e) {
-                        System.out.println("태그 없음");
+                        System.out.println("태그 없음 (DB에 null값 입력)");
+                        bvo.setTag(null);
                     }
 
-                    // 판매지수, 판매량
+                    // 판매지수, 판매량 (not null)
                     try{
                     Element sellCount = doc2.selectFirst("span.gd_sellNum");
                     String count = sellCount.text();
@@ -355,14 +384,11 @@ public class MainCateManager {
                     System.out.println("판매 지수 : "+ sCount);
                     bvo.setSellCount(sCount);
                     }catch (Exception e){
-                        System.out.println("판매 지수 : 0");
+                        System.out.println("판매 지수 : 0 (DB에 0입력)");
                         bvo.setSellCount(0);
                     }
 
-
-
-
-                    //dao.InsertBook(bvo); // DataBase에 삽입
+                    dao.InsertBook(bvo); // DataBase에 삽입
 
                     System.out.println("===========================================================================================================================");
                     // 출고 예정일 => 대부분 javascript로 작성되어 있음
@@ -396,6 +422,7 @@ public class MainCateManager {
                 }
             }
         } catch (Exception e) {
+            System.out.println("big error");
             e.printStackTrace();
         }
     }
