@@ -7,7 +7,7 @@ import java.util.*;
 public class BookDAO {
     private Connection conn;
     private PreparedStatement ps;
-    private final String URL="jdbc:oracle:thin:@oracle_medium?TNS_ADMIN=/Users/kimheejun/Documents/Wallet_oracle";
+    private final String URL="jdbc:oracle:thin:@211.63.89.131:1521:XE";
 
     public BookDAO(){
         try{
@@ -19,7 +19,7 @@ public class BookDAO {
 
     public void getConnection(){
         try {
-            conn = DriverManager.getConnection(URL,"admin","Gmlwnsskgus!@1208");
+            conn = DriverManager.getConnection(URL,"hr","happy");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -36,7 +36,7 @@ public class BookDAO {
     public void InsertMainCate(MainCategoryVO vo){
         try {
             getConnection();
-            String sql="INSERT INTO main_category VALUES " +
+            String sql="INSERT INTO main_category_3 VALUES " +
                     "(?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,vo.getId());
@@ -54,8 +54,8 @@ public class BookDAO {
     public void InsertSubCate(SubCategoryVO vo){
         try {
             getConnection();
-            String sql="INSERT INTO sub_category VALUES " +
-                    "((select nvl(max(id)+1,1)FROM sub_category),?,?,?)";
+            String sql="INSERT INTO sub_category_3 VALUES " +
+                    "((select nvl(max(id)+1,1)FROM sub_category_3),?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,vo.getMainid());
             ps.setString(2,vo.getName());
@@ -91,7 +91,7 @@ public class BookDAO {
     public void InsertBook(BooksVO vo){
         try{
             getConnection();
-            String sql = "INSERT INTO books VALUES((SELECT NVL(MAX(id),0)+1 FROM books),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO books_3 VALUES((SELECT NVL(MAX(id),0)+1 FROM books_3),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,vo.getCateid()); // 서브 카테고리 외래키
             ps.setString(2,vo.getTitle()); //책 제목
@@ -123,7 +123,7 @@ public class BookDAO {
         List<MainCategoryVO> list = new ArrayList<>();
         try{
             getConnection();
-            String sql ="SELECT id,name,link FROM main_category";
+            String sql ="SELECT id,name,link FROM main_category_3";
             ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -149,7 +149,7 @@ public class BookDAO {
         List<SubCategoryVO> list = new ArrayList<>();
         try{
             getConnection();
-            String sql ="SELECT id,main_id,name,link FROM sub_category ORDER BY id";
+            String sql ="SELECT id,main_id,name,link FROM sub_category_3 ORDER BY id";
             ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -175,7 +175,7 @@ public class BookDAO {
         List<SubCategoryVO> list = new ArrayList<>();
         try{
             getConnection();
-            String sql ="SELECT id,main_id,name,link FROM sub_category WHERE main_id=? ORDER BY id";
+            String sql ="SELECT id,main_id,name,link FROM sub_category_3 WHERE main_id=? ORDER BY id";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,main_id);
             ResultSet rs = ps.executeQuery();
@@ -201,7 +201,7 @@ public class BookDAO {
         int subCateCount = 0;
         try{
             getConnection();
-            String sql="SELECT count(*) FROM sub_category WHERE main_id = ?";
+            String sql="SELECT count(*) FROM sub_category_3 WHERE main_id = ?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,mainCateId);
             ResultSet rs = ps.executeQuery();
@@ -249,7 +249,7 @@ public class BookDAO {
         String mainName = "";
         try{
             getConnection();
-            String sql = "SELECT name FROM main_category WHERE id=(SELECT main_id FROM sub_category where id=?)";
+            String sql = "SELECT name FROM main_category_3 WHERE id=(SELECT main_id FROM sub_category_3 where id=?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,sub_id);
             ResultSet rs = ps.executeQuery();
@@ -267,7 +267,7 @@ public class BookDAO {
         int subID = 0;
         try{
             getConnection();
-            String sql = "SELECT id FROM sub_category WHERE link LIKE '%'||?||'%'";
+            String sql = "SELECT id FROM sub_category_3 WHERE link LIKE '%'||?||'%'";
             ps = conn.prepareStatement(sql);
             ps.setString(1,link);
             ResultSet rs = ps.executeQuery();

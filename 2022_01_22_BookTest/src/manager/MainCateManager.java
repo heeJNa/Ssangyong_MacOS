@@ -7,6 +7,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /* 출처 : www.yes24.com */
@@ -183,7 +184,7 @@ public class MainCateManager {
                     if (imglink.get(k).attr("src").contains("pd_19_L")) { // 19세 이상은 제외
                         continue; // for문은 continue사용 시 증감함
                     }
-                    Document doc2 = Jsoup.connect("http://www.yes24.com" + bookLink.get(k).attr("href")).get();
+                    Document doc2 = Jsoup.connect("http://www.yes24.com" + bookLink.get(k).attr("href")).timeout(60*1000).get();
 
                     // 서브 카테고리 id (not null, foreign key)
                     System.out.println("카테고리 id : " + cateid);
@@ -224,13 +225,18 @@ public class MainCateManager {
                     }
 
                     // 출간일(1안) (not null) Date로 바꾸기 위해 yyyy-MM-dd  형식으로 바꿈
-                    Element regdate = doc2.selectFirst("span.gd_date");
-                    String[] s = regdate.text().split(" ");
-                    String date = s[0].substring(0, s[0].lastIndexOf('년')) + "-" +
-                            s[1].substring(0, s[1].lastIndexOf('월')) + "-" +
-                            s[2].substring(0, s[2].lastIndexOf('일'));
-                    System.out.println("출간일 : " + date);
-                    bvo.setRegdate(Date.valueOf(date));
+                    try {
+                        Element regdate = doc2.selectFirst("span.gd_date");
+                        String[] s = regdate.text().split(" ");
+                        String date = s[0].substring(0, s[0].lastIndexOf('년')) + "-" +
+                                s[1].substring(0, s[1].lastIndexOf('월')) + "-" +
+                                s[2].substring(0, s[2].lastIndexOf('일'));
+                        System.out.println("출간일 : " + date);
+                        bvo.setRegdate(Date.valueOf(date));
+                    }catch (Exception e){
+                        System.out.println("출간일 없음 (DB에 default on null sysdate로 입력)");
+                        bvo.setRegdate(null);
+                    }
 
                     // 포스터 (not null)
                     Element poster = doc2.selectFirst("div.gd_imgArea img");
@@ -239,7 +245,7 @@ public class MainCateManager {
 
                     // 책 소개
                     try {
-                        Element content = doc2.selectFirst("textarea.txtContentText");
+                        Element content = doc2.selectFirst("div.infoWrap_txtInner textarea.txtContentText");
                         /* HTML태그들이 포함 */
                         // <br/> 형식으로 작성되어 있음.
                         System.out.println("책 소개 : " + content.text().replace("\n",""));

@@ -14,7 +14,7 @@ public class FoodDAO {
     *       CallableStatement : 프로시저 호출
     * */
     // 오라클 연결 주소
-    private final String URL="jdbc:oracle:thin:@db202112271622_medium?TNS_ADMIN=/Users/kimheejun/Documents/Wallet_DB202112271622";
+    private final String URL="jdbc:oracle:thin:@211.63.89.131:1521:XE";
 
     // 1. 드라이버 등록 (한번만 등록) => 생성자
     public FoodDAO(){
@@ -28,7 +28,7 @@ public class FoodDAO {
     // 2. 오라클 연결
     public void getConnection(){
         try{
-            conn = DriverManager.getConnection(URL,"admin","Gmlwnsskgus!@1208");
+            conn = DriverManager.getConnection(URL,"hr","happy");
         }catch (Exception e){
             e.printStackTrace();
         }
